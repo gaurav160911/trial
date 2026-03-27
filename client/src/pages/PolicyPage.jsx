@@ -48,7 +48,7 @@ export default function PolicyPage() {
     try {
       const [pData, hData] = await Promise.all([getCurrentPolicy(), getPolicyHistory()]);
       setPolicy(pData.policy || null);
-      setHistory(hData.policies || hData.history || []);
+      setHistory(Array.isArray(hData) ? hData : []);
     } catch {
       setPolicy(null);
     } finally {
@@ -60,7 +60,9 @@ export default function PolicyPage() {
     setSubscribing(planId);
     setMessage(null);
     try {
-      const data = await subscribePolicy(planId);
+      // Backend expects capitalized plan name
+      const planName = planId.charAt(0).toUpperCase() + planId.slice(1);
+      const data = await subscribePolicy(planName);
       setPolicy(data.policy);
       setMessage({ type: 'success', text: `Successfully subscribed to ${planId} plan! 🎉` });
     } catch (err) {

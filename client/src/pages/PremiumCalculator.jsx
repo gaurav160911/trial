@@ -84,7 +84,9 @@ export default function PremiumCalculator() {
     setSubscribing(true);
     setMessage(null);
     try {
-      await subscribePolicy(selectedPlan);
+      // Backend expects capitalized plan name
+      const planName = selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1);
+      await subscribePolicy(planName);
       setMessage({ type: 'success', text: `Subscribed to ${selectedPlan} plan! 🎉` });
     } catch (err) {
       setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to subscribe.' });
